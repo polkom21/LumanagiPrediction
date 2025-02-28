@@ -394,7 +394,19 @@ const ERC20_ABI = [
   { anonymous: false, inputs: [], name: "Pause", type: "event" },
   { anonymous: false, inputs: [], name: "Unpause", type: "event" },
 ];
-const USDT_CONTRACT = new web3.eth.Contract(ERC20_ABI, ETH_USDT_ADDRESS);
+
+const getBalance = async (contractAddress, userAddress, formated) => {
+  const contract = new web3.eth.Contract(ERC20_ABI, contractAddress);
+
+  const balance = await contract.methods.balanceOf(userAddress).call();
+
+  if (formated) {
+    const decimals = await contract.methods.decimals().call();
+    return new BigNumber(balance).div(10 ** decimals).toString();
+  }
+
+  return balance;
+};
 
 exports.usdtBalanceOfWallet = async (req, res) => {
   const { address, formated } = req.query;
@@ -408,14 +420,7 @@ exports.usdtBalanceOfWallet = async (req, res) => {
   }
 
   // Get balance
-  const balance = await USDT_CONTRACT.methods.balanceOf(address).call();
-
-  if (formated) {
-    const decimals = await USDT_CONTRACT.methods.decimals().call();
-    return res.json({
-      balance: new BigNumber(balance).div(10 ** decimals).toString(),
-    });
-  }
+  const balance = await getBalance(ETH_USDT_ADDRESS, address, formated);
 
   return res.json({ balance });
 };
