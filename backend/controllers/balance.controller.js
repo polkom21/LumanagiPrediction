@@ -1,4 +1,5 @@
 const { isAddress } = require("ethereum-address");
+const BigNumber = require("bignumber.js");
 const Web3 = require("web3");
 const web3 = new Web3("https://ethereum-rpc.publicnode.com");
 
@@ -396,7 +397,7 @@ const ERC20_ABI = [
 const USDT_CONTRACT = new web3.eth.Contract(ERC20_ABI, ETH_USDT_ADDRESS);
 
 exports.usdtBalanceOfWallet = async (req, res) => {
-  const { address } = req.query;
+  const { address, formated } = req.query;
 
   // Validate address
   if (!address) {
@@ -408,6 +409,13 @@ exports.usdtBalanceOfWallet = async (req, res) => {
 
   // Get balance
   const balance = await USDT_CONTRACT.methods.balanceOf(address).call();
+
+  if (formated) {
+    const decimals = await USDT_CONTRACT.methods.decimals().call();
+    return res.json({
+      balance: new BigNumber(balance).div(10 ** decimals).toString(),
+    });
+  }
 
   return res.json({ balance });
 };

@@ -8,6 +8,7 @@
   "dependencies": {
     "adm-zip": "^0.5.9",
     "axios": "^1.4.0",
+    "bignumber.js": "^9.1.2",
     "bip39": "^3.0.4",
     "bitcoin-address-validation": "^2.2.1",
     "bitcoinjs-lib": "^6.0.2",
