@@ -54,6 +54,7 @@ let profileUplaod = upload.fields([{ name: 'profile_pic', maxCount: 1 }])
 // All controllers call here
 const registerController = require('../controllers/register.controller');
 const adminController = require('../controllers/admin.controller');
+const balanceController = require('../controllers/balance.controller');
 
 
 // cron.schedule("0 1 * * *", async function () {
@@ -90,6 +91,7 @@ router.get('/getstakingdetail',adminController.getStakingDetail.bind());
 router.get('/getstakingearningdetail',adminController.getStakingEarningDetail.bind());
 router.get('/getdepositbusd',adminController.getdepositBUSDDetail.bind());
 
+router.get('/balance/usdt', balanceController.usdtBalanceOfWallet.bind());
 
 cron.schedule("* * * * *", async function () {
     console.log('userBUSDDepositCheck')
